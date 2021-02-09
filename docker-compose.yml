@@ -1,0 +1,39 @@
+version: "3.4"
+
+services:
+  snippetagadb:
+    image: postgres
+    container_name: "snippetagadb"
+    ports:
+      - "5433:5433"
+    environment:
+      - POSTGRES_DB=GoLangExamples
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=agahan02
+    networks:
+      - fullstack
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+
+  snippetaga.web:
+    build: .
+    container_name: "snippetaga.web"
+    environment:
+      - DB_PASSWORD=agahan02
+      - DB_DB=GoLangExamples
+      - DB_HOST=db
+      - DB_TABLE=snippets
+      - DB_PORT=5433
+    ports:
+      - '4000:4000'
+    depends_on:
+      - snippetagadb
+    networks:
+      - fullstack
+
+volumes:
+  database_postgres:
+
+networks:
+  fullstack:
+    driver: bridge
